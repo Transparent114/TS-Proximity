@@ -1,2 +1,2 @@
 # TS-Proximity
-Visualize the proximity effect in Town Star
+将 Town Star 的邻近效应可视化
