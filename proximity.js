@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Proximity
+// @name         Proximity_Zh
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  显示选中土地受到的邻近效应
 // @author       Transparent
 // @match        https://townstar.sandbox-games.com/launch/
@@ -11,6 +11,8 @@
 
 (function() {
     'use strict';
+    let isLogging = false;
+    let totUpdate = 0;
     let loaded = 0;
     new MutationObserver(function(mutations) {
         if (document.querySelector('.hud .bottom') && loaded == 0) {
@@ -31,6 +33,9 @@
     let X = -1;
     let Z = -1;
     async function Load_Proximity(){
+        if(isLogging) {
+            showFrequency();
+        }
         let Hud = document.createElement('div');
         Hud.style = 'margin-left:10px'
         let topProxHud = document.createElement('div');
@@ -100,6 +105,12 @@
             setTimeout(Show_Proximity, 500);
             return;
         }
+        X = x;
+        Z = z;
+        if(isLogging){
+            console.log('Update Proximity.');
+            totUpdate++;
+        }
         Clear_Hud();
         let prox = Game.town.GetProximityEffects(x,z);
         let hasProx = 0;
@@ -166,6 +177,11 @@
             document.getElementById('prox-passnone').style.display = '';
         }
         setTimeout(Show_Proximity, 500);
+    }
+    function showFrequency() {
+        console.log("Update:"+((totUpdate/10).toString())+"/s");
+        totUpdate = 0;
+        setTimeout(showFrequency,10000);
     }
     async function waitForSelecting() {
         while (Game.town.selectedObject.townX == undefined) {
